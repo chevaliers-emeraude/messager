@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chevaliers d'Émeraude — Scribe Royal</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&family=IM+Fell+English:ital@0;1&family=Dancing+Script:wght@400;600;700&family=MedievalSharp&family=Uncial+Antiqua&family=Almendra:ital,wght@0,400;1,400&family=Cormorant+Upright:ital,wght@0,400;1,400&family=Petit+Formal+Script&family=Pinyon+Script&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #c8a45a;
+    --gold-light: #e8c878;
+    --emerald: #2d5a27;
+    --emerald-dark: #1a3a18;
+    --bg-dark: #0d0a06;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg-dark);
+    min-height: 100vh;
+    font-family: 'IM Fell English', serif;
+    overflow-x: hidden;
+  }
+  body::before {
+    content:''; position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(45,90,39,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(200,164,90,0.05) 0%, transparent 40%);
+    pointer-events:none; z-index:0;
+  }
+  .stars { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+  .star {
+    position:absolute; background:rgba(200,164,90,0.4); border-radius:50%;
+    animation:twinkle var(--d,3s) ease-in-out infinite; animation-delay:var(--delay,0s);
+  }
+  @keyframes twinkle {
+    0%,100%{opacity:0.2;transform:scale(1)} 50%{opacity:0.8;transform:scale(1.5)}
+  }
+  .page-wrapper {
+    position:relative; z-index:1; min-height:100vh;
+    display:flex; flex-direction:column; align-items:center;
+    padding:50px 20px 70px;
+  }
+  .header { text-align:center; margin-bottom:50px; animation:fadeDown 1s ease forwards; opacity:0; }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+  .header-ornament { color:var(--gold); font-size:16px; letter-spacing:12px; margin-bottom:14px; opacity:0.6; }
+  .header h1 {
+    font-family:'Cinzel Decorative',serif; font-size:clamp(20px,4vw,34px); font-weight:700;
+    color:var(--gold-light); letter-spacing:4px; text-shadow:0 0 40px rgba(200,164,90,0.3); margin-bottom:8px;
+  }
+  .header .subtitle { font-style:italic; color:rgba(200,164,90,0.55); font-size:14px; letter-spacing:2px; }
+  .header-line { display:flex; align-items:center; gap:16px; margin-top:18px; justify-content:center; }
+  .header-line::before,.header-line::after { content:''; height:1px; width:70px; background:linear-gradient(to right,transparent,var(--gold),transparent); }
+  .header-gem { width:7px; height:7px; background:#4a7a42; transform:rotate(45deg); box-shadow:0 0 8px rgba(74,122,66,0.6); }
+
+  .main-container {
+    display:grid; grid-template-columns:1fr 1fr; gap:36px;
+    max-width:1080px; width:100%;
+    animation:fadeUp 1s ease forwards 0.3s; opacity:0;
+  }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  @media(max-width:768px){.main-container{grid-template-columns:1fr}}
+
+  .panel {
+    background:rgba(22,14,6,0.85); border:1px solid rgba(200,164,90,0.18);
+    border-radius:2px; padding:36px; position:relative; backdrop-filter:blur(4px);
+  }
+  .panel::before {
+    content:''; position:absolute; inset:5px;
+    border:1px solid rgba(200,164,90,0.07); border-radius:1px; pointer-events:none;
+  }
+  .corner { position:absolute; width:18px; height:18px; border-color:rgba(200,164,90,0.35); border-style:solid; }
+  .tl{top:7px;left:7px;border-width:1px 0 0 1px} .tr{top:7px;right:7px;border-width:1px 1px 0 0}
+  .bl{bottom:7px;left:7px;border-width:0 0 1px 1px} .br{bottom:7px;right:7px;border-width:0 1px 1px 0}
+
+  .panel-title {
+    font-family:'Cinzel',serif; font-size:11px; font-weight:600;
+    color:var(--gold); letter-spacing:4px; text-transform:uppercase;
+    margin-bottom:26px; display:flex; align-items:center; gap:10px;
+  }
+  .panel-title::after { content:''; flex:1; height:1px; background:linear-gradient(to right,rgba(200,164,90,0.25),transparent); }
+
+  .field-group { margin-bottom:18px; }
+  .field-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  label {
+    display:block; font-family:'Cinzel',serif; font-size:9px; font-weight:600;
+    color:rgba(200,164,90,0.6); letter-spacing:3px; text-transform:uppercase; margin-bottom:6px;
+  }
+  input[type=text], textarea {
+    width:100%; background:rgba(245,232,200,0.05); border:1px solid rgba(200,164,90,0.18);
+    border-radius:1px; padding:9px 12px; font-family:'Dancing Script',cursive; font-size:16px;
+    color:#e8d5a8; transition:border-color 0.3s,background 0.3s; outline:none;
+  }
+  input[type=text]::placeholder, textarea::placeholder { color:rgba(200,164,90,0.22); font-style:italic; }
+  input[type=text]:focus, textarea:focus { border-color:rgba(200,164,90,0.45); background:rgba(245,232,200,0.08); }
+  textarea { min-height:200px; resize:vertical; line-height:1.9; font-size:15px; }
+
+  .seal-btn {
+    width:100%; padding:13px;
+    background:linear-gradient(135deg,var(--emerald-dark) 0%,var(--emerald) 50%,var(--emerald-dark) 100%);
+    border:1px solid rgba(200,164,90,0.28); border-radius:1px;
+    color:var(--gold-light); font-family:'Cinzel',serif; font-size:10px; font-weight:600;
+    letter-spacing:4px; text-transform:uppercase; cursor:pointer; margin-top:6px;
+    transition:all 0.3s; position:relative; overflow:hidden;
+  }
+  .seal-btn::before {
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(135deg,transparent 0%,rgba(200,164,90,0.07) 50%,transparent 100%);
+    transform:translateX(-100%); transition:transform 0.5s;
+  }
+  .seal-btn:hover::before{transform:translateX(100%)}
+  .seal-btn:hover{border-color:rgba(200,164,90,0.55);box-shadow:0 0 20px rgba(45,90,39,0.25)}
+  .seal-btn:disabled{opacity:0.6;cursor:default}
+
+  .dl-btn {
+    width:100%; padding:11px; background:transparent;
+    border:1px solid rgba(200,164,90,0.2); border-radius:1px;
+    color:rgba(200,164,90,0.6); font-family:'Cinzel',serif; font-size:9px; font-weight:600;
+    letter-spacing:3px; text-transform:uppercase; cursor:pointer; margin-top:9px;
+    transition:all 0.3s; display:none;
+  }
+  .dl-btn:hover{border-color:rgba(200,164,90,0.45);color:var(--gold);background:rgba(200,164,90,0.04)}
+  .dl-btn.show{display:block}
+
+  .preview-panel{display:flex;flex-direction:column}
+  .preview-empty {
+    flex:1; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:14px; opacity:0.3; min-height:280px;
+  }
+  .big-e{font-family:'Cinzel Decorative',serif;font-size:60px;color:#4a7a42;line-height:1}
+  .preview-empty p{font-style:italic;color:var(--gold);font-size:13px;text-align:center}
+  #preview-canvas {
+    max-width:100%; display:none;
+    border:1px solid rgba(200,164,90,0.25); box-shadow:0 8px 32px rgba(0,0,0,0.5);
+    animation:revealCanvas 0.6s ease forwards;
+  }
+  @keyframes revealCanvas{from{opacity:0;transform:scale(0.97)}to{opacity:1;transform:scale(1)}}
+  .formule-hint, .incipit-hint {
+    display:flex; flex-wrap:wrap; gap:5px; margin-top:7px; align-items:center;
+  }
+  .hint-label {
+    font-family:'Cinzel',serif; font-size:8px; color:rgba(200,164,90,0.45);
+    letter-spacing:2px; text-transform:uppercase; margin-right:2px; white-space:nowrap;
+  }
+  .formule-btn {
+    background:transparent; border:1px solid rgba(200,164,90,0.2); border-radius:1px;
+    color:rgba(200,164,90,0.55); font-family:'Cinzel',serif; font-size:8px;
+    letter-spacing:1px; padding:3px 7px; cursor:pointer; transition:all 0.2s;
+    white-space:nowrap;
+  }
+  .formule-btn:hover { border-color:rgba(200,164,90,0.5); color:var(--gold); background:rgba(200,164,90,0.05); }
+  .font-select-group { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px; }
+  .font-select-label { font-family:'Cinzel',serif; font-size:9px; font-weight:600; color:rgba(200,164,90,0.6); letter-spacing:3px; text-transform:uppercase; margin-bottom:6px; display:block; }
+  .font-select {
+    width:100%; background:rgba(245,232,200,0.05); border:1px solid rgba(200,164,90,0.18);
+    border-radius:1px; padding:8px 10px; font-size:14px; color:#e8d5a8;
+    outline:none; cursor:pointer; transition:border-color 0.3s;
+    -webkit-appearance:none; appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(200,164,90,0.5)'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 10px center;
+    padding-right:28px;
+  }
+  .font-select:focus { border-color:rgba(200,164,90,0.45); background-color:rgba(245,232,200,0.08); }
+  .font-preview { font-size:13px; color:rgba(200,164,90,0.5); margin-top:4px; height:20px; overflow:hidden; }
+  .footer{margin-top:44px;text-align:center;animation:fadeUp 1s ease forwards 0.8s;opacity:0}
+  .footer p{font-family:'Cinzel',serif;font-size:9px;letter-spacing:3px;color:rgba(200,164,90,0.28)}
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+<div class="page-wrapper">
+  <header class="header">
+    <div class="header-ornament">✦ ✦ ✦</div>
+    <h1>Chevaliers d'Émeraude</h1>
+    <p class="subtitle">Scribe Royal — Envoi de lettres scellées</p>
+    <div class="header-line"><div class="header-gem"></div></div>
+  </header>
+
+  <div class="main-container">
+    <div class="panel">
+      <div class="corner tl"></div><div class="corner tr"></div>
+      <div class="corner bl"></div><div class="corner br"></div>
+      <div class="panel-title">Rédiger votre lettre</div>
+
+      <div class="field-group">
+        <label>De — Votre signature</label>
+        <input type="text" id="from-field" placeholder="Chevalier Wellan...">
+      </div>
+
+      <div class="field-group">
+        <label>Destinataire</label>
+        <input type="text" id="to-field" placeholder="Roi Emeraude...">
+        <div class="formule-hint">
+          <span class="hint-label">Formules :</span>
+          <button class="formule-btn" onclick="setFormule('Sire')">Sire</button>
+          <button class="formule-btn" onclick="setFormule('Votre Majesté')">Votre Majesté</button>
+          <button class="formule-btn" onclick="setFormule('Noble Seigneur')">Noble Seigneur</button>
+          <button class="formule-btn" onclick="setFormule('Très Illustre Souverain')">Illustre Souverain</button>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>Lieu & Date</label>
+        <input type="text" id="date-field" placeholder="Du Château d'Émeraude, en ce jour béni...">
+      </div>
+
+      <div class="field-group">
+        <label>Corps de la lettre</label>
+        <div class="incipit-hint">
+          <span class="hint-label">Incipit :</span>
+          <button class="formule-btn" onclick="setIncipit('Je me permets de porter à votre connaissance...')">Informatif</button>
+          <button class="formule-btn" onclick="setIncipit('C\'est avec la plus grande humilité que je m\'adresse à vous...')">Humble</button>
+          <button class="formule-btn" onclick="setIncipit('Par la grâce des dieux et en vertu de mon honneur...')">Solennel</button>
+          <button class="formule-btn" onclick="setIncipit('Il m\'est apparu nécessaire de vous faire part de...')">Formel</button>
+        </div>
+        <textarea id="message-field" placeholder="Rédigez votre lettre ici, noble Chevalier...&#10;&#10;Exemple : Il m'est apparu nécessaire de vous faire part des événements survenus aux confins du royaume d'Émeraude..."></textarea>
+        <div class="incipit-hint" style="margin-top:8px">
+          <span class="hint-label">Formule finale :</span>
+          <button class="formule-btn" onclick="appendFormule('\n\nEn toute fidélité et loyauté,')">Fidélité</button>
+          <button class="formule-btn" onclick="appendFormule('\n\nQue les dieux vous gardent, Sire.')">Bénédiction</button>
+          <button class="formule-btn" onclick="appendFormule('\n\nVotre très humble et dévoué serviteur,')">Dévoué</button>
+        </div>
+      </div>
+
+      <div class="font-select-group">
+        <div>
+          <span class="font-select-label">Police du texte</span>
+          <select class="font-select" id="body-font" onchange="updateFontPreview('body')">
+            <option value="Dancing Script">Dancing Script (défaut)</option>
+            <option value="Almendra">Almendra — Élégant</option>
+            <option value="Cormorant Upright">Cormorant — Noble</option>
+            <option value="IM Fell English">IM Fell — Ancien</option>
+            <option value="Pinyon Script">Pinyon — Manuscrit</option>
+            <option value="Petit Formal Script">Petit Formal — Raffiné</option>
+          </select>
+          <div class="font-preview" id="body-font-preview" style="font-family:'Dancing Script',cursive">Aperçu du texte...</div>
+        </div>
+        <div>
+          <span class="font-select-label">Police de la signature</span>
+          <select class="font-select" id="sig-font" onchange="updateFontPreview('sig')">
+            <option value="Dancing Script">Dancing Script (défaut)</option>
+            <option value="Pinyon Script">Pinyon — Signature</option>
+            <option value="Petit Formal Script">Petit Formal — Raffiné</option>
+            <option value="Almendra">Almendra — Élégant</option>
+            <option value="Cormorant Upright">Cormorant — Noble</option>
+          </select>
+          <div class="font-preview" id="sig-font-preview" style="font-family:'Dancing Script',cursive">Votre Nom</div>
+        </div>
+      </div>
+      <button class="seal-btn" id="seal-btn" onclick="generateLetter()">⚜ Sceller & Apposer le blason</button>
+      <button class="dl-btn" id="dl-btn" onclick="downloadLetter()">↓ Télécharger en PNG</button>
+    </div>
+
+    <div class="panel preview-panel">
+      <div class="corner tl"></div><div class="corner tr"></div>
+      <div class="corner bl"></div><div class="corner br"></div>
+      <div class="panel-title">Aperçu de la lettre</div>
+      <div class="preview-empty" id="preview-empty">
+        <div class="big-e">E</div>
+        <p>Votre lettre scellée<br>apparaîtra ici</p>
+      </div>
+      <canvas id="preview-canvas"></canvas>
+    </div>
+  </div>
+  <footer class="footer"><p>Royaume d'Émeraude — Enkidiev</p></footer>
+</div>
+
+<script>
+// ── Étoiles ───────────────────────────────────────────────────────────────
+const starsEl = document.getElementById('stars');
+for (let i = 0; i < 80; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--delay:${Math.random()*4}s;width:${Math.random()<0.3?2:1}px;height:${Math.random()<0.3?2:1}px`;
+  starsEl.appendChild(s);
+}
+
+const FRAME_URL = 'https://i.imgur.com/GtWOp57.png';
+
+// Fractions mesurées sur image source 800×2000 :
+//   Cadre haut  : y=0..240   = 240/2000 = 12%  (ornements + buffer parchemin)
+//   Cadre bas   : y=1760..2000 = 240/2000 = 12% (sceau + signature + ornements)
+//   → Les deux font EXACTEMENT la même fraction → identiques en hauteur ✓
+//   → Aucune détection automatique, aucune approximation.
+const F = {
+  topH  : 260 / 2000,   // fraction de IH — cadre haut (260 pour inclure filets latéraux)
+  botY  : 1760 / 2000,  // fraction de IH — début cadre bas
+  botH  : 240 / 2000,   // fraction de IH — cadre bas (= topH)
+
+  // Zone texte
+  tx1   : 100 / 800,    // fraction de IW
+  tx2   : 710 / 800,    // fraction de IW
+  ty1   : 130 / 2000,   // fraction de IH
+  tlim  : 1748 / 2000,  // fraction de IH — limite basse texte
+
+  // Signature dans la tranche basse (fractions relatives à botY*IH)
+  sx1   : 100 / 800,
+  sx2   : 510 / 800,
+  sry1  : (1775 - 1760) / 2000,  // relatif à botY
+  sry2  : (1910 - 1760) / 2000,
+};
+
+// ── Wrapping ──────────────────────────────────────────────────────────────
+function wrapText(ctx, text, maxWidth) {
+  if (!text) return [''];
+  const lines = [];
+  function splitLong(word) {
+    const p = []; let c = '';
+    for (const ch of word) {
+      const t = c + ch;
+      if (ctx.measureText(t).width > maxWidth && c) { p.push(c); c = ch; }
+      else c = t;
+    }
+    if (c) p.push(c);
+    return p;
+  }
+  for (const para of text.split('\n')) {
+    if (!para.trim()) { lines.push(''); continue; }
+    const words = para.split(' ');
+    let line = '';
+    for (const w of words) {
+      if (ctx.measureText(w).width > maxWidth) {
+        if (line) { lines.push(line); line = ''; }
+        const fs = splitLong(w);
+        for (let i = 0; i < fs.length - 1; i++) lines.push(fs[i]);
+        line = fs[fs.length - 1];
+        continue;
+      }
+      const test = line ? line + ' ' + w : w;
+      if (ctx.measureText(test).width > maxWidth && line) { lines.push(line); line = w; }
+      else line = test;
+    }
+    if (line) lines.push(line);
+  }
+  return lines;
+}
+
+async function ensureFontsLoaded() {
+  const bodyFont = document.getElementById('body-font').value;
+  const sigFont  = document.getElementById('sig-font').value;
+  const toLoad = new Set([
+    `28px "${bodyFont}"`, `italic 28px "${bodyFont}"`,
+    `italic 76px "${sigFont}"`, `28px "Dancing Script"`,
+  ]);
+  await Promise.all([...toLoad].map(f => document.fonts.load(f)));
+}
+
+function updateFontPreview(type) {
+  if (type === 'body') {
+    const f = document.getElementById('body-font').value;
+    const el = document.getElementById('body-font-preview');
+    el.style.fontFamily = `"${f}", cursive`;
+  } else {
+    const f = document.getElementById('sig-font').value;
+    const el = document.getElementById('sig-font-preview');
+    el.style.fontFamily = `"${f}", cursive`;
+    el.textContent = document.getElementById('from-field').value || 'Votre Nom';
+  }
+}
+
+async function generateLetter() {
+  const from    = document.getElementById('from-field').value.trim();
+  const to      = document.getElementById('to-field').value.trim();
+  const date    = document.getElementById('date-field').value.trim();
+  const message = document.getElementById('message-field').value.trim();
+  if (!message) { alert('Veuillez écrire un message.'); return; }
+
+  await ensureFontsLoaded();
+  const btn = document.getElementById('seal-btn');
+  btn.disabled = true;
+  btn.textContent = '⚜ Apposition du sceau...';
+
+  const frameImg = new Image();
+  frameImg.crossOrigin = 'anonymous';
+  frameImg.src = FRAME_URL + '?cb=' + Date.now();
+
+  frameImg.onload = () => {
+    btn.disabled = false;
+    btn.textContent = '⚜ Sceller & Apposer le blason';
+
+    const canvas = document.getElementById('preview-canvas');
+    const ctx    = canvas.getContext('2d');
+
+    const IW = frameImg.naturalWidth;
+    const IH = frameImg.naturalHeight;
+
+    // Résolution des coordonnées
+    const TOP_H  = Math.round(F.topH * IH);   // hauteur cadre haut
+    const BOT_Y  = Math.round(F.botY * IH);   // y début cadre bas dans source
+    const BOT_H  = Math.round(F.botH * IH);   // hauteur cadre bas = TOP_H ✓
+
+    const TX1    = Math.round(F.tx1 * IW);
+    const TX2    = Math.round(F.tx2 * IW);
+    const TY1    = Math.round(F.ty1 * IH);
+    const TLIM   = Math.round(F.tlim * IH);
+
+    const SX1    = Math.round(F.sx1 * IW);
+    const SX2    = Math.round(F.sx2 * IW);
+    const SRY1   = Math.round(F.sry1 * IH);
+    const SRY2   = Math.round(F.sry2 * IH);
+
+    // Polices sélectionnées
+    const bodyFont = document.getElementById('body-font').value;
+    const sigFont  = document.getElementById('sig-font').value;
+
+    // Typographie proportionnelle
+    const sc      = IW / 800;
+    const BODY_SZ = Math.round(28 * sc);
+    const DATE_SZ = Math.round(23 * sc);
+    const ADDR_SZ = Math.round(28 * sc);
+    const LINE_H  = Math.round(46 * sc);
+    const PAD_TOP = Math.round(20 * sc);
+    const PAD_BOT = Math.round(36 * sc);
+    const PAD_AFT = Math.round(16 * sc);
+    const TW      = TX2 - TX1;
+
+    // Indentation (calculée ici pour le wrapping correct)
+    const INDENT = Math.round(BODY_SZ * 1.2);
+
+    // Construire les lignes en tenant compte de l'indentation pour le wrapping.
+    // Les lignes de début de paragraphe ont INDENT px en moins de largeur disponible.
+    const lines = [];
+    if (to) {
+      ctx.font = `italic ${ADDR_SZ}px "${bodyFont}", "Dancing Script"`;
+      wrapText(ctx, to + ',', TW).forEach(l => lines.push({t:l, s:'addr'}));
+      lines.push({t:'', s:'gap'});
+    }
+    if (date) {
+      ctx.font = `italic ${DATE_SZ}px "Dancing Script"`;
+      wrapText(ctx, date, TW).forEach(l => lines.push({t:l, s:'date'}));
+      lines.push({t:'', s:'gap'});
+    }
+    // Corps : chaque paragraphe séparé par \n → première ligne wrappée avec TW-INDENT
+    ctx.font = `${BODY_SZ}px "${bodyFont}", "Dancing Script"`;
+    const paras = message.split('\n');
+    paras.forEach((para, pi) => {
+      if (!para.trim()) { lines.push({t:'', s:'gap'}); return; }
+      // Première ligne du paragraphe : largeur réduite de INDENT
+      const firstLineW = TW - INDENT;
+      const words = para.split(' ');
+      // On simule le wrapping en deux passes : d'abord la première ligne (réduite)
+      // puis les suivantes (largeur normale)
+      let firstLine = '';
+      let wordIdx = 0;
+      // Remplir la première ligne avec firstLineW
+      while (wordIdx < words.length) {
+        const test = firstLine ? firstLine + ' ' + words[wordIdx] : words[wordIdx];
+        if (ctx.measureText(test).width > firstLineW && firstLine) break;
+        firstLine = test;
+        wordIdx++;
+      }
+      if (firstLine) lines.push({t: firstLine, s:'body', paraStart: true});
+      // Reste du paragraphe : largeur normale
+      const rest = words.slice(wordIdx).join(' ');
+      if (rest) {
+        wrapText(ctx, rest, TW).forEach(l => lines.push({t:l, s:l?'body':'gap'}));
+      }
+      // Gap entre paragraphes (sauf le dernier)
+      if (pi < paras.length - 1) lines.push({t:'', s:'gap'});
+    });
+
+    // Hauteurs
+    let textH = 0;
+    for (const l of lines) textH += l.t ? LINE_H : LINE_H * 0.5;
+    const textEndY  = TY1 + PAD_TOP + textH + PAD_BOT;
+    const sliceCutY = Math.min(TLIM, textEndY + PAD_AFT);
+    const midH      = Math.max(0, textEndY - TLIM);
+
+    // Canvas
+    canvas.width  = IW;
+    canvas.height = sliceCutY + midH + BOT_H;
+
+    // 1. Cadre haut — TOP_H px depuis y=0
+    ctx.drawImage(frameImg, 0, 0,    IW, TOP_H,
+                            0, 0,    IW, TOP_H);
+
+    // Ornements latéraux intermédiaires — fractions mesurées sur le canvas réel
+    // (image Imgur 1517px de haut) : ornements à y=550..596 → fractions 0.363..0.393
+    const ORN_SRC_Y1 = Math.round(0.363 * IH);
+    const ORN_SRC_Y2 = Math.round(0.393 * IH);
+    const ORN_H      = ORN_SRC_Y2 - ORN_SRC_Y1;
+
+    // Zone parchemin dans le canvas (entre cadre haut et cadre bas)
+    const parchEnd     = Math.min(sliceCutY, BOT_Y);
+    const parchCanvasH = sliceCutY + midH - TOP_H;
+
+    // 2. Parchemin source normal (avec ornements inclus — on les effacera après)
+    const parchSrc = parchEnd - TOP_H;
+    if (parchSrc > 0)
+      ctx.drawImage(frameImg, 0, TOP_H, IW, parchSrc,
+                              0, TOP_H, IW, parchSrc);
+
+    // 3. Extension parchemin si texte dépasse
+    if (midH > 0) {
+      const neutralY = Math.round(IH * 0.45);
+      ctx.drawImage(frameImg, 0, neutralY, IW, 1,
+                              0, parchEnd, IW, midH);
+    }
+
+    // Effacer l'ornement source à sa position naturelle :
+    // L'ornement occupe x=0..83 (gauche) et x=725..800 (droite).
+    // Les filets verticaux x=84..88 et x=719..724 doivent rester intacts.
+    // La zone centrale x=89..718 est vide → pas besoin de l'effacer.
+    if (ORN_SRC_Y1 < parchEnd) {
+      const eraseY = ORN_SRC_Y1;
+      const eraseH = Math.min(ORN_H, parchEnd - ORN_SRC_Y1);
+
+      // Bornes des filets (fractions de IW, mesurées sur ref 800px)
+      const FILET_L = Math.round(0.105 * IW);  // x=84 — début filet gauche
+      const FILET_R = Math.round(0.906 * IW);  // x=725 — fin filet droit
+
+      ctx.fillStyle = 'rgb(232,228,219)';
+      // Efface uniquement les ornements latéraux (pas les filets)
+      ctx.fillRect(0,       eraseY, FILET_L,       eraseH); // ornement gauche
+      ctx.fillRect(FILET_R, eraseY, IW - FILET_R,  eraseH); // ornement droit
+
+      // Redessiner l'ornement centré si la zone parchemin est assez grande
+      const MIN_PARCH_FOR_ORN = Math.round(0.50 * IH);
+      if (parchCanvasH > MIN_PARCH_FOR_ORN) {
+        const ornCenterY = TOP_H + Math.round(parchCanvasH / 2);
+        const ornDestY   = ornCenterY - Math.round(ORN_H / 2);
+        ctx.drawImage(frameImg, 0, ORN_SRC_Y1, IW, ORN_H,
+                                0, ornDestY,    IW, ORN_H);
+      }
+    }
+
+    // 4. Cadre bas
+    ctx.drawImage(frameImg, 0, BOT_Y,           IW, BOT_H,
+                            0, sliceCutY + midH, IW, BOT_H);
+
+    const rebuiltLines = lines;
+
+    // ── Écriture du texte ────────────────────────────────────────────────
+    ctx.save();
+    ctx.textAlign = 'left';
+    let y = TY1 + PAD_TOP;
+    let isFirstBodyChar = true;
+
+    let rngSeed = message.length * 17 + (from.length * 31);
+    function seededRand() {
+      rngSeed = (rngSeed * 1664525 + 1013904223) & 0xFFFFFFFF;
+      return (rngSeed >>> 0) / 0xFFFFFFFF;
+    }
+
+    for (let i = 0; i < rebuiltLines.length; i++) {
+      const line = rebuiltLines[i];
+
+      if (!line.t) { y += LINE_H * 0.5; continue; }
+
+      const opa = 0.82 + seededRand() * 0.12;
+      const rot = (seededRand() - 0.5) * 0.5 * Math.PI / 180;
+
+      switch (line.s) {
+        case 'addr':
+          ctx.save();
+          ctx.font      = `italic ${ADDR_SZ}px "${bodyFont}", "Dancing Script"`;
+          ctx.fillStyle = `rgba(40,15,5,${(0.82+seededRand()*0.1).toFixed(2)})`;
+          ctx.translate(TX1, y); ctx.rotate(rot);
+          ctx.fillText(line.t, 0, 0);
+          ctx.restore();
+          break;
+
+        case 'date':
+          ctx.save();
+          ctx.font      = `italic ${DATE_SZ}px "${bodyFont}", "Dancing Script"`;
+          ctx.fillStyle = `rgba(60,35,10,${(0.72+seededRand()*0.1).toFixed(2)})`;
+          ctx.translate(TX1, y); ctx.rotate(rot);
+          ctx.fillText(line.t, 0, 0);
+          ctx.restore();
+          break;
+
+        default: { // body
+          const indent = line.paraStart ? INDENT : 0;
+
+          if (isFirstBodyChar) {
+            // Lettrine sur la première lettre du premier paragraphe
+            const firstCh = line.t.charAt(0);
+            const rest    = line.t.slice(1);
+            const DROP_SZ = Math.round(BODY_SZ * 2.4);
+            ctx.font = `italic ${DROP_SZ}px "${bodyFont}", "Dancing Script"`;
+            const dropW = ctx.measureText(firstCh).width;
+
+            ctx.save();
+            ctx.font = `italic ${DROP_SZ}px "${bodyFont}", "Dancing Script"`;
+            ctx.fillStyle = `rgba(50,18,4,${opa.toFixed(2)})`;
+            ctx.shadowColor = 'rgba(80,30,5,0.15)'; ctx.shadowBlur = 3;
+            ctx.fillText(firstCh, TX1 + indent, y);
+            ctx.restore();
+
+            if (rest) {
+              ctx.save();
+              ctx.font = `${BODY_SZ}px "${bodyFont}", "Dancing Script"`;
+              ctx.fillStyle = `rgba(28,10,3,${opa.toFixed(2)})`;
+              ctx.translate(TX1 + indent + dropW + 2, y);
+              ctx.rotate(rot);
+              ctx.fillText(rest, 0, 0);
+              ctx.restore();
+            }
+            isFirstBodyChar = false;
+          } else {
+            ctx.save();
+            ctx.font = `${BODY_SZ}px "${bodyFont}", "Dancing Script"`;
+            ctx.fillStyle = `rgba(28,10,3,${opa.toFixed(2)})`;
+            ctx.translate(TX1 + indent, y);
+            ctx.rotate(rot);
+            ctx.fillText(line.t, 0, 0);
+            ctx.restore();
+          }
+          break;
+        }
+      }
+      y += LINE_H;
+    }
+
+    ctx.restore(); // fin du clip texte
+
+    // ── Signature ─────────────────────────────────────────────────────────
+    if (from) {
+      const sigW  = SX2 - SX1;
+      const sigH  = SRY2 - SRY1;
+      const sigY1 = sliceCutY + midH + SRY1;
+      const sigCenterY = sigY1 + sigH * 0.5;
+
+      let sz = Math.round(76 * sc);
+      ctx.font = `italic ${sz}px "${sigFont}", "Dancing Script"`;
+      while (ctx.measureText(from).width > sigW - 10 && sz > 22) {
+        sz -= 2;
+        ctx.font = `italic ${sz}px "${sigFont}", "Dancing Script"`;
+      }
+
+      const sigTextY = sigCenterY + sz * 0.36;
+      const sigTextX = SX1 + 6;
+
+      // Rotation légère (-3°) pour effet naturel
+      ctx.save();
+      ctx.translate(sigTextX, sigTextY);
+      ctx.rotate(-3 * Math.PI / 180);
+      ctx.shadowColor = 'rgba(10,3,0,0.22)';
+      ctx.shadowBlur = 3; ctx.shadowOffsetX = 1; ctx.shadowOffsetY = 1;
+      ctx.font      = `italic ${sz}px "${sigFont}", "Dancing Script"`;
+      ctx.fillStyle = 'rgba(10,3,1,0.93)';
+      ctx.fillText(from, 0, 0);
+
+      // Trait de soulignement manuscrit sous la signature
+      const underW = ctx.measureText(from).width;
+      ctx.shadowBlur = 0;
+      ctx.strokeStyle = 'rgba(12,4,1,0.55)';
+      ctx.lineWidth   = Math.max(1, Math.round(1.5 * sc));
+      ctx.lineCap     = 'round';
+      // Petite courbe légèrement descendante
+      ctx.beginPath();
+      ctx.moveTo(-4, sz * 0.15);
+      ctx.bezierCurveTo(
+        underW * 0.3, sz * 0.18,
+        underW * 0.7, sz * 0.20,
+        underW + 6,   sz * 0.22
+      );
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    document.getElementById('preview-empty').style.display = 'none';
+    canvas.style.display = 'block';
+    document.getElementById('dl-btn').classList.add('show');
+  };
+
+  frameImg.onerror = () => {
+    btn.disabled = false;
+    btn.textContent = '⚜ Sceller & Apposer le blason';
+    alert('Impossible de charger le cadre. Vérifiez votre connexion.');
+  };
+}
+
+function setFormule(val) { document.getElementById('to-field').value = val; }
+function setIncipit(val) {
+  const ta = document.getElementById('message-field');
+  ta.value = val + ' '; ta.focus();
+  ta.selectionStart = ta.selectionEnd = ta.value.length;
+}
+function appendFormule(val) {
+  const ta = document.getElementById('message-field');
+  ta.value = ta.value.trimEnd() + val; ta.focus();
+}
+function downloadLetter() {
+  const canvas = document.getElementById('preview-canvas');
+  const a = document.createElement('a');
+  a.download = 'lettre-emeraude.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+}
+</script>
+</body>
+</html>
